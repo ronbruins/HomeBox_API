@@ -64,7 +64,7 @@ def update_label(label_id):
     items = hb.get_items()
     for item in items['items']:
         #if "Feestje Twan" in item['name']:
-        #print("FOUND")
+
 
         item_details = hb.get_item_by_id(item['id'])
         #print(item_details['parent']['id'])

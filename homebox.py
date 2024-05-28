@@ -10,21 +10,18 @@ loc_folder = settings.loc_folder
 hb = hbclass.HomeboxApi(user,password,base_url)
 
 def main():
-    get_file_list()
+    do_location_folder()
 
-def get_file_list():
+def do_location_folder():
     loc_idx = 0
     for root, dirs, files in os.walk(loc_folder):
         for sublevel in dirs:
-            print(loc_idx,sublevel)
             if loc_idx == 0:
                 location = sublevel
                 location_id = do_location(location)
             else:
-                print(f"{sublevel} is parent item")
                 parent_itemname = sublevel
                 parent_item_id,item_location = do_parent_item(parent_itemname,location_id,location)
-                print(parent_item_id,item_location)
                 loop_item(location_id,item_location,parent_item_id)
             loc_idx = loc_idx + 1
             
@@ -35,11 +32,9 @@ def do_location(location):
     loc_exists = False
     for existing_location in locations:
         if location == existing_location['name']:
-            print("location exists, not recreating")
             location_id = existing_location['id']
             loc_exists = True
     if loc_exists == False:
-        print(f"create location {location}")
         location_id = hb.create_location(location)
     return location_id
 
@@ -56,9 +51,7 @@ def loop_item(location_id,item_location,parent_item_id):
             if ".DS_Store" not in item:
                 itemname = item.split('.')
                 itemname = itemname[0]
-                print(f"itemname: {itemname}")
-                print(f"Item: {item}")
-                print(f"itemlocation: {item_location}")
+                print(f"Create: {itemname}")
                 if itemname not in item_location:
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)

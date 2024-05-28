@@ -30,6 +30,13 @@ class HomeboxApi:
         locations = self.hb_post(method,api,json_data)
         return locations
     
+    def get_location_by_id(self,location_id):
+        api = f"locations/{location_id}"
+        method = "GET"
+        json_data = ""
+        locations = self.hb_post(method,api,json_data)
+        return locations
+
     def get_items(self):
         api = "items"
         method = "GET"

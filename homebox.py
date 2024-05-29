@@ -1,19 +1,24 @@
 import os
 import hbclass
 import settings
+import json
+import subprocess
 
 base_url = settings.base_url
 user = settings.user
 password = settings.password
 loc_folder = settings.loc_folder
+ssc_path = "/usr/local/bin/exiftool"
 
 hb = hbclass.HomeboxApi(user,password,base_url)
 
 def main():
-    mv_loc_parent_item()
+    #mv_loc_parent_item()
     #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
     #update_label(label_id)
-    #do_location_folder()
+    do_location_folder()
+    # label_id = hb.create_label("testlabel")
+    # print(label_id)
 
 def do_location_folder():
     loc_idx = 0
@@ -54,11 +59,44 @@ def loop_item(location_id,item_location,parent_item_id):
             if ".DS_Store" not in item:
                 itemname = item.split('.')
                 itemname = itemname[0]
-                print(f"Create: {itemname}")
                 if itemname not in item_location:
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)
                     hb.update_item(parent_item_id,item_id,location_id,itemname)
+                    exif_json = call_ssc(f"{item_location}/{item}")
+                    for exifinfo in exif_json:
+                        raw_taglist = exifinfo['XMP:TagsList']
+                        labels = []
+                        labelids = []
+                        taglist = []
+                        if type(raw_taglist) != list:
+                            taglist.append(raw_taglist)
+                        else:
+                            taglist = raw_taglist
+                        for tag in taglist:
+                            print(tag)
+                            label_check = hb.get_labels()
+                            label_found = False
+                            for label in label_check:
+                                label_name = label['name']
+                                label_id = label['id']
+                                if tag in label_name:
+                                    label_found = True
+                                    label_det = {"id":label_id,"name":label_name}
+                                    labels.append(label_det)
+                                    labelids.append(label_id)
+                                    print(f"{item} with {tag} found in labels as ### {label_name}, {label_id}")
+                            if label_found == False:
+                                print(f"{item} with {tag} not found in labels")
+                                label_id = hb.create_label(tag)
+                                label_det = {"id":label_id,"name":tag}
+                                labels.append(label_det)
+                                labelids.append(label_id)
+                    print(labels)
+                    print(labelids)
+                    hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
+
+
 
 def update_label(label_id):
     items = hb.get_items()
@@ -96,6 +134,14 @@ def mv_loc_parent_item():
             print(item['id'])
             hb.update_item(parent_item_id,item['id'],location_id,item['name'])
 
+
+def call_ssc(FileLoc):
+    cmd = "-j -G -n"
+    ssc_exec = f"{ssc_path} {cmd} '{FileLoc}'"
+    output = str(subprocess.check_output(f"{ssc_exec}", shell=True, encoding='utf-8',stderr=subprocess.DEVNULL))
+    output = os.linesep.join([s for s in output.splitlines() if s])
+    #print(output)
+    return json.loads(output)
 
 if __name__ == '__main__':
     main()

@@ -88,21 +88,39 @@ class HomeboxApi:
         item_id = self.hb_post(method,api,json_data)
         return item_id
 
-    def update_item_label(self,parent_item_id,item_id,location_id,name):
+    def get_labels(self):
+        api = "labels"
+        method = "GET"
+        json_data = ""
+        labels = self.hb_post(method,api,json_data)
+        return labels
+
+
+    def create_label(self,name):
+        api = "labels"
+        method = "POST"
+        json_data = {
+            "name": f"{name}"
+            }
+        label_id = self.hb_post(method,api,json_data)
+        return label_id
+
+
+    def update_item_label(self,parent_item_id,item_id,location_id,name,labels,labelids):
         api = f"items/{item_id}"
         method = "PUT"
         json_data = {
             "id":f"{item_id}",
             "name":f"{name}",
-            "labels":[{"id":"2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18","name":"test_rb_label"}],
+            #"labels":[{"id":"e79a3812-54a4-4aff-abc6-b36e75f0f07c","name":"VSlabel"},{"id":"7d20699f-1fae-4cc4-acb4-f50df48e248b","name":"Feest"}],
+            "labels":labels,
             "locationId":f"{location_id}",
             "parentId":f"{parent_item_id}",
-            "labelIds": ["2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"]
+            #"labelIds": ["e79a3812-54a4-4aff-abc6-b36e75f0f07c","7d20699f-1fae-4cc4-acb4-f50df48e248b"]
+            "labelIds": labelids
             }
-        
-
         #"labelIds": ["string"],
-        print(f"self.hb_post({method},{api},{json_data}")
+        #print(f"self.hb_post({method},{api},{json_data}")
         item_id = self.hb_post(method,api,json_data)
         return item_id
 

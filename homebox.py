@@ -12,9 +12,6 @@ ssc_path = "/usr/local/bin/exiftool"
 
 hb = hbclass.HomeboxApi(user,password,base_url)
 
-#labels = [{"id":"e79a3812-54a4-4aff-abc6-b36e75f0f07c","name":"VSlabel"},{"id":"7d20699f-1fae-4cc4-acb4-f50df48e248b","name":"Feest"}]
-#labelids = ["e79a3812-54a4-4aff-abc6-b36e75f0f07c","7d20699f-1fae-4cc4-acb4-f50df48e248b"]
-
 def main():
     #mv_loc_parent_item()
     #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
@@ -73,12 +70,9 @@ def loop_item(location_id,item_location,parent_item_id):
                         labelids = []
                         taglist = []
                         if type(raw_taglist) != list:
-                            #print(f"{raw_taglist} is single")
                             taglist.append(raw_taglist)
                         else:
-                            #print(raw_taglist)
                             taglist = raw_taglist
-                        #print(taglist)
                         for tag in taglist:
                             print(tag)
                             label_check = hb.get_labels()
@@ -92,10 +86,7 @@ def loop_item(location_id,item_location,parent_item_id):
                                     labels.append(label_det)
                                     labelids.append(label_id)
                                     print(f"{item} with {tag} found in labels as ### {label_name}, {label_id}")
-                            if label_found == True:
-                                pass
-                                #print(f"{item} with {tag} found in labels as ### {label_name}, {label_id}")
-                            else:
+                            if label_found == False:
                                 print(f"{item} with {tag} not found in labels")
                                 label_id = hb.create_label(tag)
                                 label_det = {"id":label_id,"name":tag}
@@ -104,8 +95,6 @@ def loop_item(location_id,item_location,parent_item_id):
                     print(labels)
                     print(labelids)
                     hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
-
-
 
 
 

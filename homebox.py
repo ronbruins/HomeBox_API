@@ -17,8 +17,6 @@ def main():
     #mv_loc_parent_item()
     #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
     #update_label(label_id)
-    # label_id = hb.create_label("testlabel")
-    # print(label_id)
 
 def do_location_folder():
     loc_idx = 0

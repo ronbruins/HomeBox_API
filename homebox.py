@@ -33,6 +33,7 @@ def do_location_folder():
             loc_idx = loc_idx + 1
             
 
+## get location ##
 def do_location(location):
     print(f"Location: {location}")
     locations = hb.get_location()

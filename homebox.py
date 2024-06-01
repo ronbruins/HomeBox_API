@@ -132,7 +132,6 @@ def call_ssc(FileLoc):
     ssc_exec = f"{ssc_path} {cmd} '{FileLoc}'"
     output = str(subprocess.check_output(f"{ssc_exec}", shell=True, encoding='utf-8',stderr=subprocess.DEVNULL))
     output = os.linesep.join([s for s in output.splitlines() if s])
-    #print(output)
     return json.loads(output)
 
 if __name__ == '__main__':

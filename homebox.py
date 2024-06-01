@@ -136,7 +136,7 @@ def mv_loc_parent_item():
             print(item['name'])
             print(item['id'])
             hb.update_item(parent_item_id,item['id'],location_id,item['name'])
-
+##exiftool ##
 
 def call_ssc(FileLoc):
     cmd = "-j -G -n"

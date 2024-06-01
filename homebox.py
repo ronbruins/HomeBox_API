@@ -54,6 +54,7 @@ def do_parent_item(parent_itemname,location_id,location):
     hb.upload_photo(parent_item_id,pic_name,item_location)
     return parent_item_id,item_location
 
+#added loop item#
 def loop_item(location_id,item_location,parent_item_id):
     for root, dirs, files in os.walk(item_location):
         for item in files:
@@ -99,7 +100,7 @@ def loop_item(location_id,item_location,parent_item_id):
                     hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
 
 
-
+## label update ###
 def update_label(label_id):
     items = hb.get_items()
     for item in items['items']:
@@ -120,7 +121,7 @@ def update_label(label_id):
             hb.update_item_label(parent_item_id,item_id,location_id,name)
         except:
             pass
-
+## loc comment ##
 def mv_loc_parent_item():
     locations = hb.get_location()
     for location in locations:
@@ -135,7 +136,7 @@ def mv_loc_parent_item():
             print(item['name'])
             print(item['id'])
             hb.update_item(parent_item_id,item['id'],location_id,item['name'])
-
+##exiftool ##
 
 def call_ssc(FileLoc):
     cmd = "-j -G -n"

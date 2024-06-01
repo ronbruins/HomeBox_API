@@ -13,10 +13,10 @@ ssc_path = "/usr/local/bin/exiftool"
 hb = hbclass.HomeboxApi(user,password,base_url)
 
 def main():
+    do_location_folder()
     #mv_loc_parent_item()
     #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
     #update_label(label_id)
-    do_location_folder()
     # label_id = hb.create_label("testlabel")
     # print(label_id)
 
@@ -63,6 +63,7 @@ def loop_item(location_id,item_location,parent_item_id):
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)
                     hb.update_item(parent_item_id,item_id,location_id,itemname)
+
                     exif_json = call_ssc(f"{item_location}/{item}")
                     for exifinfo in exif_json:
                         raw_taglist = exifinfo['XMP:TagsList']

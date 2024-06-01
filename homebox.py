@@ -28,7 +28,7 @@ def do_location_folder():
                 parent_itemname = sublevel
                 parent_item_id,item_location = do_parent_item(parent_itemname,location_id,location)
                 loop_item(location_id,item_location,parent_item_id)
-            loc_idx = loc_idx + 1
+            loc_idx += 1
             
 
 def do_location(location):

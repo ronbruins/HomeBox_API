@@ -46,6 +46,7 @@ def do_location(location):
         location_id = hb.create_location(location)
     return location_id
 
+## added parent item ##
 def do_parent_item(parent_itemname,location_id,location):
     parent_item_id = hb.create_item(location_id,parent_itemname)
     pic_name = f"{parent_itemname}.jpeg"

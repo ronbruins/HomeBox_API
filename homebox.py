@@ -99,11 +99,7 @@ def loop_item(location_id,item_location,parent_item_id):
 def update_label(label_id):
     items = hb.get_items()
     for item in items['items']:
-        #if "Feestje Twan" in item['name']:
-
-
         item_details = hb.get_item_by_id(item['id'])
-        #print(item_details['parent']['id'])
         name = item['name']
         item_id = item['id']
         try:

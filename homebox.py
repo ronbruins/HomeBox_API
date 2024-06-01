@@ -100,7 +100,7 @@ def loop_item(location_id,item_location,parent_item_id):
                     hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
 
 
-
+## label update ###
 def update_label(label_id):
     items = hb.get_items()
     for item in items['items']:
@@ -121,7 +121,7 @@ def update_label(label_id):
             hb.update_item_label(parent_item_id,item_id,location_id,name)
         except:
             pass
-
+## loc comment ##
 def mv_loc_parent_item():
     locations = hb.get_location()
     for location in locations:

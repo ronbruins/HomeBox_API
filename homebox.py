@@ -15,7 +15,6 @@ hb = hbclass.HomeboxApi(user,password,base_url)
 def main():
     do_location_folder()
     #mv_loc_parent_item()
-    #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
     #update_label(label_id)
 
 def do_location_folder():

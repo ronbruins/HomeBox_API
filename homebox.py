@@ -54,6 +54,7 @@ def do_parent_item(parent_itemname,location_id,location):
     hb.upload_photo(parent_item_id,pic_name,item_location)
     return parent_item_id,item_location
 
+#added loop item#
 def loop_item(location_id,item_location,parent_item_id):
     for root, dirs, files in os.walk(item_location):
         for item in files:

@@ -18,6 +18,7 @@ def main():
     #label_id = "2070e5f5-7e53-4aa6-bf87-a07b9e3b0d18"
     #update_label(label_id)
 
+## main loop for the files ##
 def do_location_folder():
     loc_idx = 0
     for root, dirs, files in os.walk(loc_folder):
@@ -32,6 +33,7 @@ def do_location_folder():
             loc_idx = loc_idx + 1
             
 
+## get location ##
 def do_location(location):
     print(f"Location: {location}")
     locations = hb.get_location()
@@ -44,6 +46,7 @@ def do_location(location):
         location_id = hb.create_location(location)
     return location_id
 
+## added parent item ##
 def do_parent_item(parent_itemname,location_id,location):
     parent_item_id = hb.create_item(location_id,parent_itemname)
     pic_name = f"{parent_itemname}.jpeg"

@@ -45,7 +45,8 @@ def do_location(location):
 
 def do_parent_item(parent_itemname,location_id,location):
     parent_item_id = hb.create_item(location_id,parent_itemname)
-    pic_name = f"{parent_itemname}.jpeg"
+    pic_name = f"{parent_itemname}.jpg"
+
     item_location = f"{loc_folder}/{location}/{parent_itemname}"
     hb.upload_photo(parent_item_id,pic_name,item_location)
     return parent_item_id,item_location
@@ -60,7 +61,6 @@ def loop_item(location_id,item_location,parent_item_id):
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)
                     hb.update_item(parent_item_id,item_id,location_id,itemname)
-
                     exif_json = call_ssc(f"{item_location}/{item}")
                     for exifinfo in exif_json:
                         raw_taglist = exifinfo['XMP:TagsList']
@@ -130,7 +130,9 @@ def call_ssc(FileLoc):
     cmd = "-j -G -n"
     ssc_exec = f"{ssc_path} {cmd} '{FileLoc}'"
     output = str(subprocess.check_output(f"{ssc_exec}", shell=True, encoding='utf-8',stderr=subprocess.DEVNULL))
-    output = os.linesep.join([s for s in output.splitlines() if s])
+    ### loop to remove blank lines
+    ### commented as after seeing this, wasn't sure the purpose
+    #output = os.linesep.join([s for s in output.splitlines() if s])
     return json.loads(output)
 
 if __name__ == '__main__':

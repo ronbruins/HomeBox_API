@@ -45,7 +45,7 @@ def do_location(location):
 
 def do_parent_item(parent_itemname,location_id,location):
     parent_item_id = hb.create_item(location_id,parent_itemname)
-    pic_name = f"{parent_itemname}.jpeg"
+    pic_name = f"{parent_itemname}.jpg"
     item_location = f"{loc_folder}/{location}/{parent_itemname}"
     hb.upload_photo(parent_item_id,pic_name,item_location)
     return parent_item_id,item_location
@@ -60,39 +60,56 @@ def loop_item(location_id,item_location,parent_item_id):
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)
                     hb.update_item(parent_item_id,item_id,location_id,itemname)
+                    item_full_path = f"{item_location}/{item}"
+                    
+                    taglist = get_item_tags(item_full_path)
+                    labels = []
+                    labelids = []
+                    
+                    # exif_json = call_ssc(f"{item_location}/{item}")
+                    # for exifinfo in exif_json:
+                    #     raw_taglist = exifinfo['XMP:TagsList']
+                    #     if type(raw_taglist) != list:
+                    #         taglist.append(raw_taglist)
+                    #     else:
+                    #         taglist = raw_taglist
 
-                    exif_json = call_ssc(f"{item_location}/{item}")
-                    for exifinfo in exif_json:
-                        raw_taglist = exifinfo['XMP:TagsList']
-                        labels = []
-                        labelids = []
-                        taglist = []
-                        if type(raw_taglist) != list:
-                            taglist.append(raw_taglist)
-                        else:
-                            taglist = raw_taglist
-                        for tag in taglist:
-                            print(tag)
-                            label_check = hb.get_labels()
-                            label_found = False
-                            for label in label_check:
-                                label_name = label['name']
-                                label_id = label['id']
-                                if tag in label_name:
-                                    label_found = True
-                                    label_det = {"id":label_id,"name":label_name}
-                                    labels.append(label_det)
-                                    labelids.append(label_id)
-                                    print(f"{item} with {tag} found in labels as ### {label_name}, {label_id}")
-                            if label_found == False:
-                                print(f"{item} with {tag} not found in labels")
-                                label_id = hb.create_label(tag)
-                                label_det = {"id":label_id,"name":tag}
+                    for tag in taglist:
+                        print(tag)
+                        label_check = hb.get_labels()
+                        label_found = False
+                        for label in label_check:
+                            label_name = label['name']
+                            label_id = label['id']
+                            if tag in label_name:
+                                label_found = True
+                                label_det = {"id":label_id,"name":label_name}
                                 labels.append(label_det)
                                 labelids.append(label_id)
+                                print(f"{item} with {tag} found in labels as ### {label_name}, {label_id}")
+                        if label_found == False:
+                            print(f"{item} with {tag} not found in labels")
+                            label_id = hb.create_label(tag)
+                            label_det = {"id":label_id,"name":tag}
+                            labels.append(label_det)
+                            labelids.append(label_id)
                     print(labels)
                     print(labelids)
                     hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
+
+def get_item_tags(item_full_path):
+    taglist = []
+    exif_json = call_ssc(item_full_path)
+    for exifinfo in exif_json:
+        raw_taglist = exifinfo['XMP:TagsList']
+        labels = []
+        labelids = []
+        taglist = []
+        if type(raw_taglist) != list:
+            taglist.append(raw_taglist)
+        else:
+            taglist = raw_taglist
+    return taglist
 
 
 def update_label(label_id):

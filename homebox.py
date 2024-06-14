@@ -19,16 +19,43 @@ def main():
 
 def do_location_folder():
     loc_idx = 0
+    item_array = {}
+    files_list = []
+    folders_list = []
+    idx = 0
     for root, dirs, files in os.walk(loc_folder):
-        for sublevel in dirs:
-            if loc_idx == 0:
-                location = sublevel
-                location_id = do_location(location)
-            else:
-                parent_itemname = sublevel
-                parent_item_id,item_location = do_parent_item(parent_itemname,location_id,location)
-                loop_item(location_id,item_location,parent_item_id)
-            loc_idx = loc_idx + 1
+        for name in files:
+            item = os.path.join(root, name)
+            files_list.append(item)
+        
+        for name in dirs:
+            print(idx, name)
+            if idx != 0:
+                folders_list.append(name)
+            idx = idx + 1
+
+    for box in folders_list:
+        for item in files_list:
+            if box in item:
+                print(box, item)
+        print("####")
+
+        # for sublevel in dirs:
+        #     print(files)
+        #     print(loc_idx, sublevel)
+        #     if loc_idx == 0:
+        #         location = sublevel
+        #         location_id = do_location(location)
+        #     else:
+        #         parent_itemname = sublevel
+        #         item_location = f"{loc_folder}/{location}/{parent_itemname}"
+        #         parent_item_id = do_parent_item(parent_itemname,location_id,item_location)
+                
+        #         #loop_item(location_id,item_location,parent_item_id)
+        #         # for name in files:
+        #         #     print(os.path.join(root, name))
+        #         #tst_loop_item(location_id,item_location,parent_item_id)
+        #     loc_idx = loc_idx + 1
             
 
 def do_location(location):
@@ -43,12 +70,17 @@ def do_location(location):
         location_id = hb.create_location(location)
     return location_id
 
-def do_parent_item(parent_itemname,location_id,location):
+def do_parent_item(parent_itemname,location_id,item_location):
     parent_item_id = hb.create_item(location_id,parent_itemname)
     pic_name = f"{parent_itemname}.jpg"
-    item_location = f"{loc_folder}/{location}/{parent_itemname}"
+    #item_location = f"{loc_folder}/{location}/{parent_itemname}"
     hb.upload_photo(parent_item_id,pic_name,item_location)
-    return parent_item_id,item_location
+    return parent_item_id
+
+def tst_loop_item(location_id,item_location,parent_item_id):
+    for root, dirs, files in os.walk(item_location):
+        for item in files:
+            print(item)
 
 def loop_item(location_id,item_location,parent_item_id):
     for root, dirs, files in os.walk(item_location):
@@ -60,19 +92,9 @@ def loop_item(location_id,item_location,parent_item_id):
                     item_id = hb.create_item(location_id,itemname)
                     hb.upload_photo(item_id,item,item_location)
                     hb.update_item(parent_item_id,item_id,location_id,itemname)
-                    item_full_path = f"{item_location}/{item}"
-                    
-                    taglist = get_item_tags(item_full_path)
+                    taglist = get_item_tags(item_location,item)
                     labels = []
                     labelids = []
-                    
-                    # exif_json = call_ssc(f"{item_location}/{item}")
-                    # for exifinfo in exif_json:
-                    #     raw_taglist = exifinfo['XMP:TagsList']
-                    #     if type(raw_taglist) != list:
-                    #         taglist.append(raw_taglist)
-                    #     else:
-                    #         taglist = raw_taglist
 
                     for tag in taglist:
                         print(tag)
@@ -93,17 +115,14 @@ def loop_item(location_id,item_location,parent_item_id):
                             label_det = {"id":label_id,"name":tag}
                             labels.append(label_det)
                             labelids.append(label_id)
-                    print(labels)
-                    print(labelids)
                     hb.update_item_label(parent_item_id,item_id,location_id,itemname,labels,labelids)
 
-def get_item_tags(item_full_path):
+def get_item_tags(item_location,item):
+    item_full_path = f"{item_location}/{item}"
     taglist = []
     exif_json = call_ssc(item_full_path)
     for exifinfo in exif_json:
         raw_taglist = exifinfo['XMP:TagsList']
-        labels = []
-        labelids = []
         taglist = []
         if type(raw_taglist) != list:
             taglist.append(raw_taglist)
